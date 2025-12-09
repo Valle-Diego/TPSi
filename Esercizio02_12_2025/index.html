@@ -28,7 +28,7 @@ for (let i = 1; i < dati.length; i++) {
     }
 }
 
-// Calcoliamo le coordinate
+// Calcoliamo le coordinate dei punti
 const coordinate = [];
 for (let i = 0; i < dati.length; i++) {
     const x = margineX + i * ((canvas.width - 2 * margineX) / (dati.length - 1));
@@ -39,7 +39,7 @@ for (let i = 0; i < dati.length; i++) {
     coordinate.push({ x: x, y: y });
 }
 
-// --- Disegno degli assi ---
+// --- Disegno assi ---
 ctx.beginPath();
 ctx.moveTo(margineX, margineY);
 ctx.lineTo(margineX, canvas.height - margineY); // asse Y
@@ -48,7 +48,7 @@ ctx.strokeStyle = "black";
 ctx.lineWidth = 2;
 ctx.stroke();
 
-// --- Disegno del grafico ---
+// --- Disegno linea grafico ---
 ctx.beginPath();
 ctx.moveTo(coordinate[0].x, coordinate[0].y);
 
@@ -60,7 +60,7 @@ ctx.strokeStyle = "red";
 ctx.lineWidth = 2;
 ctx.stroke();
 
-// --- Etichette asse X ---
+// --- Etichette asse X (mesi) ---
 ctx.fillStyle = "black";
 ctx.font = "14px Arial";
 ctx.textAlign = "center";
@@ -69,18 +69,23 @@ for (let i = 0; i < coordinate.length; i++) {
     ctx.fillText(mesi[i], coordinate[i].x, canvas.height - margineY + 15);
 }
 
-// --- Etichette asse Y ---
+// --- Etichette asse Y (tutti i numeri) ---
 ctx.textAlign = "right";
 
-// 0
-ctx.fillText("0", margineX - 10, canvas.height - margineY);
+for (let v = 0; v <= maxVal; v++) {
+    // posizione Y del valore
+    const y = canvas.height - margineY - (v / maxVal) * (canvas.height - 2 * margineY);
 
-// metà
-let metà = Math.floor(maxVal / 2);
-ctx.fillText(metà.toString(), margineX - 10, canvas.height / 2);
+    // testo
+    ctx.fillText(v.toString(), margineX - 10, y + 4);
 
-// massimo
-ctx.fillText(maxVal.toString(), margineX - 10, margineY);
+    // (opzionale) piccolo trattino sul lato
+    ctx.beginPath();
+    ctx.moveTo(margineX - 3, y);
+    ctx.lineTo(margineX, y);
+    ctx.strokeStyle = "black";
+    ctx.stroke();
+}
 
 </script>
 

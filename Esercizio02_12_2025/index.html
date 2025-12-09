@@ -10,25 +10,45 @@
 
 <script>
 // Dati femminicidi per mese
+const mesi = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
 const dati = [11, 9, 10, 10, 11, 13, 14, 13, 9, 10, 13, 13];
 
 const canvas = document.getElementById('grafico');
 const ctx = canvas.getContext('2d');
 
-// Margini per non incollare la linea ai bordi
-const margineX = 40;
+// Margini
+const margineX = 60;
 const margineY = 40;
 
-const maxVal = Math.max(...dati);
+// Troviamo il valore massimo
+let maxVal = dati[0];
+for (let i = 1; i < dati.length; i++) {
+    if (dati[i] > maxVal) {
+        maxVal = dati[i];
+    }
+}
 
-// Trasformiamo i dati in coordinate
-const coordinate = dati.map((val, i) => {
-    const x = margineX + i * ((canvas.width - 2*margineX) / (dati.length - 1));
-    const y = canvas.height - margineY - (val / maxVal) * (canvas.height - 2*margineY);
-    return { x, y };
-});
+// Calcoliamo le coordinate
+const coordinate = [];
+for (let i = 0; i < dati.length; i++) {
+    const x = margineX + i * ((canvas.width - 2 * margineX) / (dati.length - 1));
 
-// Disegniamo il grafico
+    const val = dati[i];
+    const y = canvas.height - margineY - (val / maxVal) * (canvas.height - 2 * margineY);
+
+    coordinate.push({ x: x, y: y });
+}
+
+// --- Disegno degli assi ---
+ctx.beginPath();
+ctx.moveTo(margineX, margineY);
+ctx.lineTo(margineX, canvas.height - margineY); // asse Y
+ctx.lineTo(canvas.width - margineX, canvas.height - margineY); // asse X
+ctx.strokeStyle = "black";
+ctx.lineWidth = 2;
+ctx.stroke();
+
+// --- Disegno del grafico ---
 ctx.beginPath();
 ctx.moveTo(coordinate[0].x, coordinate[0].y);
 
@@ -39,6 +59,29 @@ for (let i = 1; i < coordinate.length; i++) {
 ctx.strokeStyle = "red";
 ctx.lineWidth = 2;
 ctx.stroke();
+
+// --- Etichette asse X ---
+ctx.fillStyle = "black";
+ctx.font = "14px Arial";
+ctx.textAlign = "center";
+
+for (let i = 0; i < coordinate.length; i++) {
+    ctx.fillText(mesi[i], coordinate[i].x, canvas.height - margineY + 15);
+}
+
+// --- Etichette asse Y ---
+ctx.textAlign = "right";
+
+// 0
+ctx.fillText("0", margineX - 10, canvas.height - margineY);
+
+// metà
+let metà = Math.floor(maxVal / 2);
+ctx.fillText(metà.toString(), margineX - 10, canvas.height / 2);
+
+// massimo
+ctx.fillText(maxVal.toString(), margineX - 10, margineY);
+
 </script>
 
 </body>
